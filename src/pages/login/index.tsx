@@ -4,28 +4,34 @@ import { FormEvent, useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../services/firebaseConnection'
 import { toast } from 'react-toastify'
+import { FaSpinner } from 'react-icons/fa6'
 
 export function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const navigate = useNavigate()
 
   function handleSubmit(e: FormEvent) {
+    setIsLoading(true)
     e.preventDefault()
 
     if (email === '' || password === '') {
       toast.error('Preencha todos os campos!')
+      setIsLoading(false)
       return
     }
 
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        console.log('Login realizado com sucesso!')
+        setIsLoading(false)
         navigate('/admin', { replace: true })
       })
       .catch((error) => {
         console.error('Erro ao fazer login:', error)
+        setIsLoading(false)
+        toast.error('Email ou senha incorretos!')
       })
   }
 
@@ -55,12 +61,22 @@ export function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button
-          type="submit"
-          className="h-9 bg-blue-600 rounded-md border-0 text-lg font-medium text-white"
-        >
-          Acessar
-        </button>
+        {isLoading ? (
+          <button
+            type="button"
+            className="h-9 bg-blue-600/50 rounded-md border-0 text-lg font-medium text-white flex justify-center items-center cursor-not-allowed hover:bg-opacity-50 duration-300"
+            disabled
+          >
+            <FaSpinner className="animate-spin" />
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="h-9 bg-blue-600 rounded-md border-0 text-lg font-medium text-white"
+          >
+            Acessar
+          </button>
+        )}
       </form>
     </div>
   )

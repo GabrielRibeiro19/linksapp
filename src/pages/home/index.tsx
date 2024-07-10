@@ -76,7 +76,10 @@ export function Home() {
       <h1 className="md:text-4xl text-3xl font-bold text-white mt-20">
         Gabriel Ribeiro
       </h1>
-      <span className="text-gray-50 mb-5 mt-3">Veja meus links 👇</span>
+      <span className="md:text-2xl text-xl text-gray-50 mb-2 mt-1">
+        Software Developer
+      </span>
+      <span className="text-gray-50 mb-5">Veja meus links 👇</span>
 
       <main className="flex flex-col w-11/12 max-w-xl text-center">
         {links.map((link) => (
@@ -102,15 +105,21 @@ export function Home() {
 
         {socialLinks && Object.keys(socialLinks).length > 0 && (
           <footer className="flex justify-center gap-3 my-4">
-            <Social url={socialLinks?.facebook}>
-              <FaFacebook size={35} color="#fff" />
-            </Social>
-            <Social url={socialLinks?.youtube}>
-              <FaYoutube size={35} color="#fff" />
-            </Social>
-            <Social url={socialLinks?.instagram}>
-              <FaInstagram size={35} color="#fff" />
-            </Social>
+            {socialLinks?.facebook && (
+              <Social url={socialLinks?.facebook}>
+                <FaFacebook size={35} color="#fff" />
+              </Social>
+            )}
+            {socialLinks?.youtube && (
+              <Social url={socialLinks?.youtube}>
+                <FaYoutube size={35} color="#fff" />
+              </Social>
+            )}
+            {socialLinks?.instagram && (
+              <Social url={socialLinks?.instagram}>
+                <FaInstagram size={35} color="#fff" />
+              </Social>
+            )}
           </footer>
         )}
       </main>

@@ -4,11 +4,13 @@ import { Input } from '../../components/Input'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from '../../services/firebaseConnection'
 import { toast } from 'react-toastify'
+import { FaSpinner } from 'react-icons/fa'
 
 export function Networks() {
   const [facebook, setFacebook] = useState('')
   const [instagram, setInstagram] = useState('')
   const [youtube, setYoutube] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     function loadLinks() {
@@ -31,6 +33,7 @@ export function Networks() {
   }, [])
 
   function handleRegister(e: FormEvent) {
+    setIsLoading(true)
     e.preventDefault()
 
     setDoc(doc(db, 'social', 'link'), {
@@ -40,13 +43,13 @@ export function Networks() {
     })
       .then(() => {
         toast.success('Links salvos com sucesso!')
+        setIsLoading(false)
       })
       .catch((err) => {
         toast.error('Erro ao salvar os links!')
+        setIsLoading(false)
         console.error(err)
       })
-
-    console.log({ facebook, instagram, youtube })
   }
 
   return (
@@ -81,12 +84,21 @@ export function Networks() {
           placeholder="Digite a url do youtube..."
         />
 
-        <button
-          type="submit"
-          className="text-white bg-blue-600 h-9 rounded-md flex items-center justify-center mb-7 font-medium"
-        >
-          Salvar links
-        </button>
+        {isLoading ? (
+          <button
+            type="button"
+            className="text-white bg-blue-600/50 h-9 rounded-md flex items-center justify-center mb-7 font-medium cursor-not-allowed"
+          >
+            <FaSpinner className="animate-spin" />
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="text-white bg-blue-600 h-9 rounded-md flex items-center justify-center mb-7 font-medium"
+          >
+            Salvar links
+          </button>
+        )}
       </form>
     </div>
   )

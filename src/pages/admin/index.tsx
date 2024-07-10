@@ -13,6 +13,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../../services/firebaseConnection'
 import { toast } from 'react-toastify'
+import { FaSpinner } from 'react-icons/fa'
 
 interface LinkProps {
   id: string
@@ -27,6 +28,7 @@ export function Admin() {
   const [urlInput, setUrlInput] = useState('')
   const [textColorInput, setTextColorInput] = useState('#f1f1f1')
   const [backgroundColorInput, setBackgroundColorInput] = useState('#121212')
+  const [isLoading, setIsLoading] = useState(false)
 
   const [links, setLinks] = useState<LinkProps[]>([])
 
@@ -56,10 +58,12 @@ export function Admin() {
   }, [])
 
   function handleRegister(e: FormEvent) {
+    setIsLoading(true)
     e.preventDefault()
 
     if (nameInput === '' || urlInput === '') {
       toast.error('Preencha todos os campos!')
+      setIsLoading(false)
       return
     }
 
@@ -72,13 +76,14 @@ export function Admin() {
     })
       .then(() => {
         toast.success('Cadastrado com sucesso!')
+        setIsLoading(false)
         setNameInput('')
         setUrlInput('')
-        setBackgroundColorInput('#121212')
-        setTextColorInput('#f1f1f1')
       })
       .catch((err) => {
         console.log('Erro ao cadastrar no banco: ', err)
+        toast.error('Erro ao cadastrar!')
+        setIsLoading(false)
       })
   }
 
@@ -148,12 +153,22 @@ export function Admin() {
           </div>
         )}
 
-        <button
-          type="submit"
-          className="mb-7 bg-blue-600 h-9 rounded-md text-white font-medium gap-4 flex items-center justify-center hover:bg-opacity-50 duration-300"
-        >
-          Cadastrar
-        </button>
+        {isLoading ? (
+          <button
+            type="button"
+            className="mb-7 bg-blue-600/50 h-9 rounded-md text-white font-medium gap-4 flex items-center justify-center cursor-not-allowed"
+            disabled
+          >
+            <FaSpinner className="animate-spin" />
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="mb-7 bg-blue-600 h-9 rounded-md text-white font-medium gap-4 flex items-center justify-center hover:bg-opacity-50 duration-300"
+          >
+            Cadastrar
+          </button>
+        )}
       </form>
 
       <h2 className="font-bold text-white mb-4 text-2xl">Meus Links</h2>
